@@ -10,4 +10,4 @@ class Message:
         return f"Тип: {self.type}, адресс: {self.address}, длинна: {self.len}, время: {self.time}"
 
     def __str__(self):
-        return f"Тип: {self.type}, адресс: {self.address}, длинна: {self.len}, время: {self.time}"
+        return f"Тип: {self.type}, адресс: {self.address}, длинна: {self.len}, время: {self.time:5}"

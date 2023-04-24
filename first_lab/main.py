@@ -1,8 +1,8 @@
 import math
 import random
+
 import numpy as np
-from scipy.stats import chisquare
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 from MyRandom import MyRandom
 
@@ -32,6 +32,16 @@ def main():
               f"Тест частотности: {particularity(list_default_random)}, \n"
               f"Тест равномерности: {uniform(list_default_random)} \n")
 
+        intervals = [i * 0.1 for i in range(11)]
+        hist, _ = np.histogram(list_default_random, intervals)
+        frequencies = hist / n
+
+        plt.bar(intervals[:-1], frequencies, width=0.1)
+        plt.xlabel(f'Значение случайной величины {n}')
+        plt.ylabel('Частотность')
+        plt.title('График функции P() для оценки частотности генератора')
+        plt.show()
+
 
         my_list_random = my_generator(_n=n)
         my_expected_value = get_expected_value(my_list_random)
@@ -45,6 +55,16 @@ def main():
         print(f"MyRandom{n}: "
               f"Тест частотности: {particularity(list_default_random)}, \n"
               f"Тест равномерности: {uniform(list_default_random)}")
+
+        intervals = [i * 0.1 for i in range(11)]
+        hist, _ = np.histogram(my_list_random, intervals)
+        frequencies = hist / n
+
+        plt.bar(intervals[:-1], frequencies, width=0.1)
+        plt.xlabel(f'Значение случайной величины {n}')
+        plt.ylabel('Частотность')
+        plt.title('График функции P() для оценки частотности генератора')
+        plt.show()
 
         print("------------------------------------------------")
 

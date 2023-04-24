@@ -1,6 +1,5 @@
 import math
 import random
-
 import numpy as np
 
 from three_lab import Message
@@ -16,10 +15,23 @@ def generate_data():
 
 
 def generate_type_message() -> list:
+
     result_list = []
-    mu = 0.4
-    sigma = math.sqrt(4.2)
-    norma = [random.normalvariate(mu, sigma) for i in range(100)]
+
+    # заданные параметры распределения
+    mean = 0.4
+    variance = 4.2
+    num_messages = 100
+
+    # генерация случайных чисел из нормального распределения, исключая отрицательные значения
+    message_times = np.zeros(num_messages)
+    i = 0
+    while i < num_messages:
+        time = np.random.normal(loc=mean, scale=np.sqrt(variance))
+        if time >= 0:
+            message_times[i] = time
+            i += 1
+
     for item in range(len(random_list)):
         message = Message.Message()
 
@@ -37,7 +49,8 @@ def generate_type_message() -> list:
             message.address = np.random.choice(range(1, 6), p=(0.51, 0.02, 0.23, 0.12, 0.12))
 
         message.len = random.randrange(22, 254)
-        message.time = norma[item]
+
+        message.time = message_times[item]
         result_list.append(message)
 
     return result_list
@@ -49,7 +62,11 @@ def task():
     arr: list[Message] = generate_type_message()
     arr = sorted(arr, key=lambda message: message.time)
 
+    for item in arr:
+        print(item)
+
     arr = sorted(arr, key=lambda x: x.time)
+
     coun = [0, 0, 0, 0]
     for i in arr:
         coun[i.type - 1] += 1
@@ -92,8 +109,8 @@ def task():
     for i in range(4):
         temp = Data(time[i])
         print(i + 1, temp)
-    for i in arr:
-        print(i)
+    for i in range(len(arr)):
+        print(f"{i+1} {arr[i]}")
 
 
 if __name__ == "__main__":
