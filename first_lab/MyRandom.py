@@ -1,14 +1,18 @@
+import time
+
+
 class MyRandom:
 
-    current_value = 0.0
+    def __init__(self, seed=None, a=1103515245, c=12345, m=2**31 - 1):
+        self.a = a
+        self.c = c
+        self.m = m
+        self.x = seed or int(time.time())
 
-    def __init__(self, current_value):
-        self.current_value = current_value
+    def rand(self):
+        self.x = (self.a * self.x + self.c) % self.m
+        return self.x / self.m
 
-    def next(self) -> float:
-        a = 214013
-        b = 2531011
-        m = 2**32
-
-        self.current_value = (a * self.current_value + b) % m
-        return self.current_value / m
+    def randrange(self, start, stop):
+        r = self.rand() / self.m
+        return start + int(r * (stop - start))

@@ -31,6 +31,8 @@ def main():
         print(f"Random{n}: "
               f"Тест частотности: {particularity(list_default_random)}, \n"
               f"Тест равномерности: {uniform(list_default_random)} \n")
+        # evaluate_uniformity(list_default_random)
+
 
         intervals = [i * 0.1 for i in range(11)]
         hist, _ = np.histogram(list_default_random, intervals)
@@ -42,7 +44,6 @@ def main():
         plt.title('График функции P() для оценки частотности генератора')
         plt.show()
 
-
         my_list_random = my_generator(_n=n)
         my_expected_value = get_expected_value(my_list_random)
         my_dispersion = get_dispersion(my_list_random, my_expected_value)
@@ -51,6 +52,7 @@ def main():
               f"Мат.ожидание: {my_expected_value},"
               f" Дисперсия: {my_dispersion}, "
               f"Сред.квадра.отклонение: {my_deviation}")
+        # evaluate_uniformity(my_list_random)
 
         print(f"MyRandom{n}: "
               f"Тест частотности: {particularity(list_default_random)}, \n"
@@ -68,6 +70,38 @@ def main():
 
         print("------------------------------------------------")
 
+
+def evaluate_uniformity(data):
+    # Вычисляем теоретическое математическое ожидание
+    a = np.min(data)
+    b = np.max(data)
+    theoretical_mean = (a + b) / 2
+
+    # Вычисляем математическое ожидание для каждой последовательности
+    sequence_lengths = np.arange(1, 11) * 1000
+    means_fixed_length = []
+    means_variable_length = []
+
+    for length in sequence_lengths:
+        sequence = data[:length]
+        mean = np.mean(sequence)
+        means_fixed_length.append(mean)
+
+    for i, length in enumerate(sequence_lengths):
+        sequence = data[:length]
+        mean = np.mean(sequence)
+        means_variable_length.append(mean)
+        # Строим графики для первых 5 последовательностей переменной длины
+        plt.plot(np.arange(i + 1), theoretical_mean - np.array(means_variable_length[:i + 1]), 'ro-')
+
+    # Строим график для фиксированной длины последовательности
+    plt.plot(sequence_lengths, theoretical_mean - np.array(means_fixed_length), 'bo-')
+
+    plt.title('Evaluation of uniformity')
+    plt.xlabel('Sequence number')
+    plt.ylabel('Difference (M - Mi)')
+    plt.legend(['Variable length sequences', 'Fixed length sequence'])
+    plt.show()
 
 def uniform(data: list) -> list:
     result = []
@@ -95,15 +129,11 @@ def particularity(data: list):
 
 
 def my_generator(_n: int) -> list:
-    generate_list = []
+    myRandom = MyRandom()
+    list_my_random = []
     for i in range(_n):
-        if i == 0:
-            generate_list.append(MyRandom(0).next())
-        else:
-            generate_list.append(MyRandom(generate_list[i - 1]).next())
-
-    return generate_list
-
+        list_my_random.append(myRandom.rand())
+    return list_my_random
 
 def default_generator(_n: int) -> list:
     generate_list = []
