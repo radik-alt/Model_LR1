@@ -21,7 +21,7 @@ class CountMath:
             len_average[i] /= self.n_type[i]
             print(f"{i + 1} {len_average[i]:.4}")
         print("\nВероятность поступления сообщения")
-        [print(f"{i + 1} {self.n_type[i] / 100:4}") for i in range(4)]
+        [print(f"{i + 1} {self.n_type[i] / 100}") for i in range(4)]
         print()
 
     def count_queue_stats(self):
@@ -69,7 +69,6 @@ class CountMath:
             l += self.n_type[i] * (i + 1) * ui[i]
         print(f"W = {w}\nU = {u}\nL = {l}")
         print()
-        vi = ui  # среднее время обслуживания заявки i-го типа, второй начальный момент времени обслуживания
 
         print()
         print("3 Item:")
@@ -100,6 +99,8 @@ class Queue:
         return f"Тпи: {self.type} Момент появления в канале: {self.t_in:5}; Начало обслуживания: {self.start:5} " \
                f"Конец обсулживания: {self.end:5} Время ожидания: {self.t_out:5} Время пребывания в канале {self.spent:5}"
 
+    # def __repr__(self):
+    #     return f"{self.type} {self.t_in} {self.start} {self.end} {self.t_out}, {self.spent}"
 
 class InputQueue:
     def __init__(self, arr):
@@ -107,20 +108,26 @@ class InputQueue:
 
     def process_req(self):
         req_list = []
-        t0 = math.ceil(self.arr[0].time * 60)
-        for id, val in enumerate(self.arr):
-            temp = Queue(id + 1, val.type, val.length)
-            temp.t_in = t0
-            temp.start = t0 + random.randint(0, 5)
-            temp.end = temp.start + temp.spent
-            temp.t_out = temp.start - temp.t_in
-            t0 = temp.end + 1
-            req_list.append(temp)
+        t0 = 0
+        for i in range(0, len(self.arr), 5):
+            group = self.arr[i:i+5]
+            group.sort(key=lambda x: x.type)
+            for id, val in enumerate(group):
+                temp = Queue(id + 1, val.type, val.length)
+                temp.t_in = t0
+                temp.start = t0
+                temp.end = temp.start + temp.spent
+                if id == 0:
+                    temp.t_out = temp.t_in
+                else:
+                    temp.t_out = temp.t_in
+                t0 = temp.end + 1
+                req_list.append(temp)
 
         return req_list
 
 
-class Data():
+class Data:
     def __init__(self):
         self.type = 0
         self.address = 0
